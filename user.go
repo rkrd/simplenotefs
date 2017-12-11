@@ -15,8 +15,8 @@ func getUser() (sn.User, error) {
 
 	if os.Getenv(SN_AUTH) == "" {
 		if len(os.Args) < 3 {
-			fmt.Println("Usage: ", os.Args[0], "email password")
-			panic("This is wrong")
+			fmt.Println("Not logged in. To get auth credentials: ", os.Args[0], "email password")
+			os.Exit(1)
 		}
 
 		user, err = sn.GetAuth(os.Args[1], os.Args[2])
@@ -24,7 +24,9 @@ func getUser() (sn.User, error) {
 			panic(err)
 		} else {
 			fmt.Printf("%s=%s\n", SN_AUTH, user.Auth)
-			fmt.Printf("export %s %s", SN_AUTH, SN_MAIL)
+			fmt.Printf("%s=%s\n", SN_MAIL, user.Email)
+			fmt.Printf("export %s %s\n", SN_AUTH, SN_MAIL)
+			os.Exit(0)
 		}
 	} else {
 		user.Email = os.Getenv(SN_MAIL)
